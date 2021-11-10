@@ -3,4 +3,4 @@ project(libneko)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_library(libneko library.cpp library.h)
+add_library(libneko src/String.cpp src/String.hpp src/Vector.cpp src/Vector.hpp)
