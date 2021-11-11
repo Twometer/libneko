@@ -5,29 +5,30 @@
 #ifndef LIBNEKO_STRING_HPP
 #define LIBNEKO_STRING_HPP
 
+#include <stddef.h>
+
 #include "Vector.hpp"
-#include <cstddef>
 
 namespace nk {
 
     class String {
     private:
-        const char *m_buffer = nullptr;
-        size_t m_length = 0;
+        char *m_buffer;
+        size_t m_length;
 
     public:
         /* Constructors */
         String();
 
-        String(char chr);
+        String(char chr); // NOLINT(google-explicit-constructor)
 
-        String(const char *c_str);
+        String(const char *c_str); // NOLINT(google-explicit-constructor)
 
         String(const char *c_str, size_t length);
 
         String(const String &other);
 
-        String(const String &&other);
+        String(const String &&other) noexcept;
 
         ~String();
 
@@ -66,6 +67,15 @@ namespace nk {
         const char *begin() const;
 
         const char *end() const;
+
+        /* Operators */
+        bool operator==(const String &other) const;
+
+        String operator+(const String &other) const;
+
+        String operator+=(const String &other) const;
+
+        char operator[](size_t index) const;
     };
 
 }
