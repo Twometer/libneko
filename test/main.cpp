@@ -54,10 +54,14 @@ void test_vector_simple() {
     vector.push(42);
 }
 
+nk::String test_create_string(int i) {
+    return nk::String("test_") + i;
+}
+
 nk::Vector<nk::String> test_vector_return() {
     nk::Vector<nk::String> vector;
     vector.push("test1");
-    vector.push("test2");
+    vector.push(test_create_string(2));
     return vector;
 }
 

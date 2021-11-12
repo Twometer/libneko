@@ -8,6 +8,7 @@
 #include <stddef.h>
 
 #include "Vector.hpp"
+#include "ToString.hpp"
 
 namespace nk {
 
@@ -77,6 +78,11 @@ namespace nk {
         bool operator==(const String &other) const;
 
         String operator+(const String &other) const;
+
+        template<typename T>
+        String operator+(T other) const {
+            return this->append(nk::to_string(other));
+        }
 
         String &operator+=(const String &other);
 
