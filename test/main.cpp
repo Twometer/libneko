@@ -5,6 +5,7 @@
 #include <cstdio>
 
 #include <String.hpp>
+#include <StringBuffer.hpp>
 
 void test_string() {
     nk::String str;
@@ -60,20 +61,39 @@ nk::String test_create_string(int i) {
 
 nk::Vector<nk::String> test_vector_return() {
     nk::Vector<nk::String> vector;
-    vector.push("test1");
+    vector.push("test_1");
     vector.push(test_create_string(2));
     return vector;
 }
 
 void test_vector_complex() {
     auto vec = test_vector_return();
-    vec.push("test3");
-    printf("%s\n", vec[0].c_str());
+    vec.push("test_3");
+    assert(vec[0] == "test_1");
+    assert(vec[1] == "test_2");
+    assert(vec[2] == "test_3");
+}
+
+void test_string_buffer() {
+    nk::StringBuffer buf;
+    assert(buf.length() == 0);
+    assert(buf.is_empty());
+
+    buf.append('4');
+    buf.append("20");
+    buf.append(nk::String("69"));
+    buf.append_newline();
+
+    auto expect = nk::String("42069\n");
+    assert(buf.length() == expect.length());
+    assert(buf.to_string() == expect);
+    assert(!buf.is_empty());
 }
 
 int main() {
     test_string();
     test_vector_simple();
     test_vector_complex();
+    test_string_buffer();
     return 0;
 }

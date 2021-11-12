@@ -10,7 +10,7 @@ namespace nk {
     class String;
 
     template<typename T>
-    String to_string(T value);
+    String to_string(const T &value);
 
 };
 
