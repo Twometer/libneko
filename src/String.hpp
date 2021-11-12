@@ -13,8 +13,11 @@ namespace nk {
 
     class String {
     private:
-        char *m_buffer;
-        size_t m_length;
+        char *m_buffer{};
+        size_t m_length{};
+
+    private:
+        void init_from(const char *c_str, size_t length);
 
     public:
         /* Constructors */
@@ -73,7 +76,9 @@ namespace nk {
 
         String operator+(const String &other) const;
 
-        String operator+=(const String &other) const;
+        String &operator+=(const String &other);
+
+        String &operator=(const String &other);
 
         char operator[](size_t index) const;
     };

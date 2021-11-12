@@ -7,6 +7,17 @@
 #include <assert.h>
 #include <string.h>
 
+void nk::String::init_from(const char *c_str, size_t length) {
+    delete[] m_buffer;
+    m_length = length;
+    m_buffer = new char[length + 1];
+    m_buffer[length] = 0;
+
+    if (c_str != nullptr && length > 0) {
+        memcpy(m_buffer, c_str, length);
+    }
+}
+
 nk::String::String() : String(nullptr, 0) {
 }
 
@@ -16,13 +27,8 @@ nk::String::String(char chr) : String(&chr, 1) {
 nk::String::String(const char *c_str) : String(c_str, strlen(c_str)) {
 }
 
-nk::String::String(const char *c_str, size_t length) : m_length(length) {
-    m_buffer = new char[length + 1];
-    m_buffer[length] = 0;
-
-    if (c_str != nullptr && length > 0) {
-        memcpy(m_buffer, c_str, length);
-    }
+nk::String::String(const char *c_str, size_t length) {
+    this->init_from(c_str, length);
 }
 
 nk::String::String(const nk::String &other) : String(other.m_buffer, other.m_length) {
@@ -50,31 +56,72 @@ bool nk::String::is_empty() const {
 }
 
 bool nk::String::starts_with(const nk::String &other) const {
-    return false;
+    if (other.m_length > m_length)
+        return false;
+
+    for (size_t i = 0; i < other.length(); i++)
+        if (other.m_buffer[i] != m_buffer[i])
+            return false;
+
+    return true;
 }
 
 bool nk::String::ends_with(const nk::String &other) const {
-    return false;
+    if (other.m_length > m_length)
+        return false;
+
+    for (size_t i = 0; i < other.length(); i++)
+        if (other.m_buffer[i] != m_buffer[i - m_length])
+            return false;
+
+    return true;
 }
 
 int nk::String::index_of(const nk::String &other) const {
-    return 0;
+    if (other.m_length > m_length)
+        return -1;
+
+    for (size_t i = 0; i < m_length; i++) {
+
+        bool found = false;
+        for (size_t j = 0; j < other.m_length; j++) {
+            if (other.m_buffer[j] != m_buffer[i + j])
+                return false;
+            else
+                found = true;
+        }
+
+        if (found)
+            return (int) i;
+    }
+
+    return -1;
 }
 
 bool nk::String::contains(const nk::String &other) const {
-    return false;
+    return this->index_of(other) != -1;
 }
 
 nk::String nk::String::append(const nk::String &other) const {
-    return nk::String();
+    auto new_str = nk::String();
+    delete[] new_str.m_buffer;
+
+    new_str.m_length = this->m_length + other.m_length;
+    new_str.m_buffer = new char[new_str.m_length + 1];
+
+    memcpy(new_str.m_buffer, m_buffer, m_length);
+    memcpy(new_str.m_buffer + m_length, other.m_buffer, other.m_length);
+    new_str.m_buffer[new_str.m_length] = 0;
+
+    return new_str;
 }
 
 nk::String nk::String::substring(size_t offset) const {
-    return nk::String();
+    return nk::String(m_buffer + offset);
 }
 
 nk::String nk::String::remove(size_t offset) const {
-    return nk::String();
+    return nk::String(m_buffer, m_length - offset);
 }
 
 nk::String nk::String::replace(const nk::String &replace, const nk::String &with) const {
@@ -94,7 +141,7 @@ char nk::String::front() const {
 }
 
 char nk::String::back() const {
-    return m_buffer[length() - 1];
+    return m_buffer[m_length - 1];
 }
 
 const char *nk::String::begin() const {
@@ -102,14 +149,14 @@ const char *nk::String::begin() const {
 }
 
 const char *nk::String::end() const {
-    return &m_buffer[length() - 1];
+    return &m_buffer[m_length - 1];
 }
 
 bool nk::String::operator==(const nk::String &other) const {
-    if (length() != other.length())
+    if (m_length != other.m_length)
         return false;
 
-    for (size_t i = 0; i < length(); i++)
+    for (size_t i = 0; i < m_length; i++)
         if (m_buffer[i] != other.m_buffer[i])
             return false;
 
@@ -120,8 +167,17 @@ nk::String nk::String::operator+(const nk::String &other) const {
     return this->append(other);
 }
 
-nk::String nk::String::operator+=(const nk::String &other) const {
-    return nk::String();
+nk::String &nk::String::operator+=(const nk::String &other) {
+    return *this = *this + other;
+}
+
+nk::String &nk::String::operator=(const nk::String &other) {
+    if (&other == this)
+        return *this;
+
+    this->init_from(other.m_buffer, other.m_length);
+
+    return *this;
 }
 
 char nk::String::operator[](size_t index) const {
