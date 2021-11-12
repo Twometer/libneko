@@ -34,9 +34,12 @@ nk::String::String(const char *c_str, size_t length) {
 nk::String::String(const nk::String &other) : String(other.m_buffer, other.m_length) {
 }
 
-nk::String::String(const nk::String &&other) noexcept {
+nk::String::String(nk::String &&other) noexcept {
     m_buffer = other.m_buffer;
     m_length = other.m_length;
+
+    other.m_buffer = nullptr;
+    other.m_length = 0;
 }
 
 nk::String::~String() {
@@ -70,8 +73,8 @@ bool nk::String::ends_with(const nk::String &other) const {
     if (other.m_length > m_length)
         return false;
 
-    for (size_t i = 0; i < other.length(); i++)
-        if (other.m_buffer[i] != m_buffer[i - m_length])
+    for (size_t i = 0, j = m_length - other.length(); i < other.length(); i++, j++)
+        if (other.m_buffer[i] != m_buffer[j])
             return false;
 
     return true;
@@ -82,16 +85,15 @@ int nk::String::index_of(const nk::String &other) const {
         return -1;
 
     for (size_t i = 0; i < m_length; i++) {
-
-        bool found = false;
+        bool matched = true;
         for (size_t j = 0; j < other.m_length; j++) {
-            if (other.m_buffer[j] != m_buffer[i + j])
-                return false;
-            else
-                found = true;
+            if (other.m_buffer[j] != m_buffer[i + j]) {
+                matched = false;
+                break;
+            }
         }
 
-        if (found)
+        if (matched)
             return (int) i;
     }
 
@@ -116,24 +118,43 @@ nk::String nk::String::append(const nk::String &other) const {
     return new_str;
 }
 
-nk::String nk::String::substring(size_t offset) const {
-    return nk::String(m_buffer + offset);
+nk::String nk::String::substring(size_t start_idx) const {
+    assert(start_idx < m_length);
+    return nk::String(m_buffer + start_idx);
 }
 
-nk::String nk::String::remove(size_t offset) const {
-    return nk::String(m_buffer, m_length - offset);
+nk::String nk::String::substring(size_t start_idx, size_t end_idx) const {
+    assert(start_idx < m_length);
+    assert(end_idx < m_length);
+    assert(end_idx > start_idx);
+    return nk::String(m_buffer + start_idx, end_idx - start_idx);
+}
+
+nk::String nk::String::remove(size_t end_idx) const {
+    assert(end_idx < m_length);
+    return this->substring(0, end_idx);
 }
 
 nk::String nk::String::replace(const nk::String &replace, const nk::String &with) const {
+    // TODO
     return nk::String();
 }
 
 nk::Vector<nk::String> nk::String::split(const nk::String &separator) const {
+    // TODO
     return nk::Vector<nk::String>();
 }
 
 nk::String nk::String::trim() {
-    return nk::String();
+    size_t i = 0;
+    while (i < m_length && m_buffer[i] == ' ')
+        i++;
+
+    size_t j = m_length - 1;
+    while (j >= 0 && m_buffer[j] == ' ')
+        j--;
+
+    return this->substring(i, j + 1);
 }
 
 char nk::String::front() const {
@@ -149,7 +170,7 @@ const char *nk::String::begin() const {
 }
 
 const char *nk::String::end() const {
-    return &m_buffer[m_length - 1];
+    return &m_buffer[m_length];
 }
 
 bool nk::String::operator==(const nk::String &other) const {

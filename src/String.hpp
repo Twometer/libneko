@@ -31,7 +31,7 @@ namespace nk {
 
         String(const String &other);
 
-        String(const String &&other) noexcept;
+        String(String &&other) noexcept;
 
         ~String();
 
@@ -52,9 +52,11 @@ namespace nk {
 
         String append(const String &other) const;
 
-        String substring(size_t offset) const;
+        String substring(size_t start_idx) const;
 
-        String remove(size_t offset) const;
+        String substring(size_t start_idx, size_t end_idx) const;
+
+        String remove(size_t end_idx) const;
 
         String replace(const String &replace, const String &with) const;
 
