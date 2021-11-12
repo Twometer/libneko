@@ -82,6 +82,8 @@ namespace nk {
 
         String &operator=(const String &other);
 
+        String &operator=(String &&other) noexcept;
+
         char operator[](size_t index) const;
     };
 

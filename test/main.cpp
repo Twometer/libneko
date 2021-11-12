@@ -2,8 +2,7 @@
 // Created by Twometer on 12 Nov 2021.
 //
 
-#include <stdio.h>
-#include <assert.h>
+#include <cstdio>
 
 #include <String.hpp>
 
@@ -49,8 +48,28 @@ void test_string() {
     assert(str == "test1");
 }
 
+void test_vector_simple() {
+    nk::Vector<int> vector;
+    vector.push(69);
+    vector.push(42);
+}
+
+nk::Vector<nk::String> test_vector_return() {
+    nk::Vector<nk::String> vector;
+    vector.push("test1");
+    vector.push("test2");
+    return vector;
+}
+
+void test_vector_complex() {
+    auto vec = test_vector_return();
+    vec.push("test3");
+    printf("%s\n", vec[0].c_str());
+}
+
 int main() {
     test_string();
-
+    test_vector_simple();
+    test_vector_complex();
     return 0;
 }

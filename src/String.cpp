@@ -201,6 +201,21 @@ nk::String &nk::String::operator=(const nk::String &other) {
     return *this;
 }
 
+nk::String &nk::String::operator=(nk::String &&other) noexcept {
+    if (&other == this)
+        return *this;
+
+    delete[] m_buffer;
+
+    m_buffer = other.m_buffer;
+    m_length = other.m_length;
+
+    other.m_buffer = nullptr;
+    other.m_length = 0;
+
+    return *this;
+}
+
 char nk::String::operator[](size_t index) const {
     assert(index < length());
     return m_buffer[index];
