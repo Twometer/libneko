@@ -6,6 +6,7 @@
 #include <StringBuffer.hpp>
 #include <Path.hpp>
 #include <cstdio>
+#include <Hash.hpp>
 
 void test_string() {
     nk::String str;
@@ -139,6 +140,16 @@ void test_paths() {
     assert(!combined_path.is_root());
 }
 
+nk::hash_t strhash(const char *c) {
+    return nk::hash(c);
+}
+
+void test_hash() {
+    assert(nk::hash(1234) == 1234);
+    assert(nk::hash(12391293102873910823ull) == 12391293102873910823ull);
+    assert(strhash("test") == 3556498);
+}
+
 int main() {
     test_string();
     test_string_split();
@@ -147,5 +158,6 @@ int main() {
     test_vector_empty();
     test_string_buffer();
     test_paths();
+    test_hash();
     return 0;
 }
