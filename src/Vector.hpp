@@ -119,6 +119,20 @@ namespace nk {
             return m_buffer[index];
         }
 
+        Vector<T> &operator=(const nk::Vector<T> &other) {
+            if (&other == this)
+                return *this;
+
+            m_capacity = other.m_capacity;
+            m_length = other.m_length;
+
+            for (size_t i = 0; i < m_length; i++) {
+                m_buffer[i] = other.m_buffer[i];
+            }
+
+            return *this;
+        }
+
     private:
         void ensure_capacity(size_t min_capacity) {
             if (min_capacity < m_capacity)
