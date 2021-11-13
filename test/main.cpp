@@ -5,8 +5,8 @@
 #include <String.hpp>
 #include <StringBuffer.hpp>
 #include <Path.hpp>
-#include <cstdio>
 #include <Hash.hpp>
+#include <HashMap.hpp>
 
 void test_string() {
     nk::String str;
@@ -78,6 +78,7 @@ nk::Vector<nk::String> test_vector_return() {
 
 void test_vector_complex() {
     auto vec = test_vector_return();
+    auto vec2 = nk::Vector<nk::String>();
     vec.push("test_3");
     assert(vec[0] == "test_1");
     assert(vec[1] == "test_2");
@@ -148,6 +149,14 @@ void test_hash() {
     assert(nk::hash(1234) == 1234);
     assert(nk::hash(12391293102873910823ull) == 12391293102873910823ull);
     assert(strhash("test") == 3556498);
+}
+
+void test_hash_map() {
+    nk::HashMap<int, int> test_map{};
+    test_map.insert(5, 34);
+
+    assert(test_map.find(5).value() == 34);
+    assert(!test_map.find(4).has_value());
 }
 
 int main() {
