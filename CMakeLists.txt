@@ -3,7 +3,7 @@ project(libneko)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(LIBNEKO_SOURCES src/String.cpp src/String.hpp src/Vector.cpp src/Vector.hpp src/ToString.cpp src/ToString.hpp src/StringBuffer.cpp src/StringBuffer.hpp)
+set(LIBNEKO_SOURCES src/String.cpp src/String.hpp src/Vector.hpp src/ToString.cpp src/ToString.hpp src/StringBuffer.cpp src/StringBuffer.hpp src/Path.cpp src/Path.hpp)
 
 add_library(libneko ${LIBNEKO_SOURCES})
 

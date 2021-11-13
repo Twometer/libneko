@@ -81,6 +81,11 @@ namespace nk {
             m_buffer[m_length - 1] = other;
         }
 
+        void pop() {
+            assert(m_length > 0);
+            m_length--;
+        }
+
         void clear() {
             m_length = 0;
         }
