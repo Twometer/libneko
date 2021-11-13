@@ -4,11 +4,14 @@
 
 #include <String.hpp>
 #include <StringBuffer.hpp>
+#include <Path.hpp>
+#include <cstdio>
 
 void test_string() {
     nk::String str;
     assert(str.length() == 0);
     assert(str.is_empty());
+    assert(str.trim().is_empty());
 
     str = "  test ";
     assert(str == "  test ");
@@ -47,6 +50,14 @@ void test_string() {
     assert(str == "test1");
 }
 
+void test_string_split() {
+    nk::String str("comma,separated,values");
+    auto parts = str.split(',');
+    assert(parts[0] == "comma");
+    assert(parts[1] == "separated");
+    assert(parts[2] == "values");
+}
+
 void test_vector_simple() {
     nk::Vector<int> vector;
     vector.push(69);
@@ -72,6 +83,19 @@ void test_vector_complex() {
     assert(vec[2] == "test_3");
 }
 
+void test_vector_empty() {
+    nk::Vector<nk::String> vec;
+    assert(vec.is_empty());
+    assert(vec.length() == 0);
+
+    auto iterator_called = false;
+    for (const auto &s : vec) {
+        iterator_called = true;
+    }
+
+    assert(!iterator_called);
+}
+
 void test_string_buffer() {
     nk::StringBuffer buf;
     assert(buf.length() == 0);
@@ -88,10 +112,40 @@ void test_string_buffer() {
     assert(!buf.is_empty());
 }
 
+void test_paths() {
+    nk::Path abs_path("/test/1/2/3/../test.f");
+    const auto &parts = abs_path.parts();
+    assert(parts[0] == "test");
+    assert(parts[1] == "1");
+    assert(parts[2] == "2");
+    assert(parts[3] == "test.f");
+    assert(abs_path.is_absolute() == true);
+    assert(abs_path.name() == "test.f");
+    assert(abs_path.is_root() == false);
+
+    nk::Path root_path("/");
+    assert(root_path.parts().is_empty());
+    assert(root_path.name().is_empty());
+    assert(root_path.is_root() == true);
+    assert(root_path.is_absolute() == true);
+    assert(root_path.to_string() == "/");
+
+    nk::Path combined_path = nk::Path("path/1/subdir/") + nk::Path("../path/2");
+    assert(combined_path.parts()[0] == "path");
+    assert(combined_path.parts()[1] == "1");
+    assert(combined_path.parts()[2] == "path");
+    assert(combined_path.parts()[3] == "2");
+    assert(!combined_path.is_absolute());
+    assert(!combined_path.is_root());
+}
+
 int main() {
     test_string();
+    test_string_split();
     test_vector_simple();
     test_vector_complex();
+    test_vector_empty();
     test_string_buffer();
+    test_paths();
     return 0;
 }

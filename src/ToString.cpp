@@ -28,6 +28,8 @@ nk::String nk::to_string(const char *const &value) {
 
 template<>
 nk::String nk::to_string(const nk::Vector<char> &value) {
+    if (value.is_empty())
+        return "";
     return nk::String(value.begin(), value.length());
 }
 

@@ -3,6 +3,7 @@
 //
 
 #include "String.hpp"
+#include "StringBuffer.hpp"
 
 #include <assert.h>
 #include <string.h>
@@ -125,7 +126,7 @@ nk::String nk::String::substring(size_t start_idx) const {
 
 nk::String nk::String::substring(size_t start_idx, size_t end_idx) const {
     assert(start_idx < m_length);
-    assert(end_idx < m_length);
+    assert(end_idx <= m_length);
     assert(end_idx > start_idx);
     return nk::String(m_buffer + start_idx, end_idx - start_idx);
 }
@@ -145,7 +146,30 @@ nk::Vector<nk::String> nk::String::split(const nk::String &separator) const {
     return nk::Vector<nk::String>();
 }
 
+nk::Vector<nk::String> nk::String::split(char sep) const {
+    nk::Vector<nk::String> parts;
+    nk::StringBuffer buf;
+
+    for (size_t i = 0; i < m_length; i++) {
+        char c = m_buffer[i];
+        if (c == sep) {
+            parts.push(buf.to_string());
+            buf.clear();
+        } else {
+            buf.append(c);
+        }
+    }
+
+    if (!buf.is_empty())
+        parts.push(buf.to_string());
+
+    return parts;
+}
+
 nk::String nk::String::trim() {
+    if (is_empty())
+        return *this;
+
     size_t i = 0;
     while (i < m_length && m_buffer[i] == ' ')
         i++;

@@ -30,6 +30,8 @@ namespace nk {
         StringBuffer &append(const String &string);
 
         StringBuffer &append_newline();
+
+        void clear();
     };
 
 };

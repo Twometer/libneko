@@ -63,6 +63,8 @@ namespace nk {
 
         Vector<String> split(const String &separator) const;
 
+        Vector<String> split(char separator) const;
+
         String trim();
 
         /* Iterator implementation */

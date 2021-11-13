@@ -22,7 +22,7 @@ namespace nk {
 
         const Vector<String> &parts() const;
 
-        String file_name() const;
+        String name() const;
 
         String to_string() const;
 

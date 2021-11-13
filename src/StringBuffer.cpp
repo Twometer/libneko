@@ -43,3 +43,7 @@ nk::StringBuffer &nk::StringBuffer::append_newline() {
     return *this;
 }
 
+void nk::StringBuffer::clear() {
+    m_buffer.clear();
+}
+

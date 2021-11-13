@@ -92,19 +92,25 @@ namespace nk {
 
         /* Iterator implementation */
         T &front() const {
+            assert(!is_empty());
             return m_buffer[0];
         }
 
         T &back() const {
+            assert(!is_empty());
             return m_buffer[m_length - 1];
         }
 
         T *begin() const {
+            if (is_empty())
+                return nullptr;
             return &m_buffer[0];
         }
 
         T *end() const {
-            return &m_buffer[m_length - 1];
+            if (is_empty())
+                return nullptr;
+            return &m_buffer[m_length];
         }
 
         /* Operators */

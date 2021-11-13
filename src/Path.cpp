@@ -6,13 +6,13 @@
 #include "StringBuffer.hpp"
 
 nk::Path::Path(const nk::String &value) {
-    auto parts = value.split("/");
+    auto parts = value.split('/');
     for (auto part : parts) {
         auto trimmed = part.trim();
         if (trimmed.is_empty() || trimmed == ".") {
             continue;
         }
-        if (trimmed == "..") {
+        if (!m_parts.is_empty() && trimmed == "..") {
             m_parts.pop();
             continue;
         }
@@ -26,7 +26,10 @@ const nk::Vector<nk::String> &nk::Path::parts() const {
     return m_parts;
 }
 
-nk::String nk::Path::file_name() const {
+nk::String nk::Path::name() const {
+    if (m_parts.is_empty()) {
+        return "";
+    }
     return m_parts.back();
 }
 
@@ -52,18 +55,7 @@ bool nk::Path::is_absolute() const {
 }
 
 nk::Path nk::Path::operator+(const nk::Path &other) const {
-    nk::Path path;
-    path.m_absolute = m_absolute;
-
-    // Copy own parts
-    for (const auto &part : m_parts)
-        path.m_parts.push(part);
-
-    // Copy other parts
-    for (const auto &part : other.m_parts)
-        path.m_parts.push(part);
-
-    return path;
+    return nk::Path(join(this->to_string(), other.to_string()));
 }
 
 nk::String nk::Path::join(const nk::String &a, const nk::String &b) {
