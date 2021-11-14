@@ -14,7 +14,8 @@ namespace nk {
     template<typename K, typename V>
     class HashMap {
     private:
-        static constexpr size_t default_capacity = 4;
+        static constexpr float max_load_factor = 0.75f;
+        static constexpr size_t default_capacity = 8;
 
         struct Entry {
             K m_key;
@@ -59,7 +60,17 @@ namespace nk {
             return Optional<V>();
         }
 
+        size_t length() {
+            size_t result = 0;
+            for (const Bucket &buck : m_buckets)
+                result += buck.m_entries.length();
+            return result;
+        }
+
     private:
+        void rehash() {
+
+        }
 
 
     };
