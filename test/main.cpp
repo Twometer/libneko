@@ -7,6 +7,7 @@
 #include <Path.hpp>
 #include <Hash.hpp>
 #include <HashMap.hpp>
+#include <Function.hpp>
 
 void test_string() {
     nk::String str;
@@ -159,6 +160,10 @@ void test_hash_map() {
     assert(!test_map.find(4).has_value());
 }
 
+void test_function(nk::Function<int()> func) {
+    assert(func() == 42);
+}
+
 int main() {
     test_string();
     test_string_split();
@@ -168,5 +173,7 @@ int main() {
     test_string_buffer();
     test_paths();
     test_hash();
+    test_hash_map();
+    test_function([] { return 42; });
     return 0;
 }
