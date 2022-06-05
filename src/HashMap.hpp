@@ -29,12 +29,6 @@ namespace nk {
             Entry *m_tail = nullptr;
             size_t m_items = 0;
             bool m_used = false;
-
-            ~Bucket() {
-                for (Entry *entry = m_head; entry != nullptr; entry = entry->m_next) {
-                    delete entry;
-                }
-            }
         };
 
         nk::Vector<Bucket> m_buckets{};
@@ -62,6 +56,7 @@ namespace nk {
             if (bucket.m_head == nullptr)
                 bucket.m_head = entry;
             bucket.m_items++;
+            bucket.m_used = true;
         }
 
         Optional<V> find(const K &key) {
@@ -71,7 +66,7 @@ namespace nk {
             if (!bucket.m_used)
                 return Optional<V>();
 
-            for (Entry *entry = bucket.m_head; entry->m_next != nullptr; entry = entry->m_next) {
+            for (Entry *entry = bucket.m_head; entry != nullptr; entry = entry->m_next) {
                 if (entry->m_key == key)
                     return entry->m_value;
             }
@@ -102,7 +97,7 @@ namespace nk {
 
             // Rehash
             for (const Bucket &bucket : m_buckets) {
-                for (Entry *entry = bucket.m_head; entry->m_next != nullptr; entry = entry->m_next) {
+                for (Entry *entry = bucket.m_head; entry != nullptr; entry = entry->m_next) {
                     // Recalculate hash
                     auto new_bucket_idx = hash(entry->m_key) % m_buckets.length();
                     Bucket &new_bucket = m_buckets[new_bucket_idx];
